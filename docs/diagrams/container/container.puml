@@ -1,0 +1,29 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!include C4P/C4_Context.puml
+!include C4P/C4_Container.puml
+!include C4P/C4_Component.puml
+
+System_Boundary(app, "Heating control and temperature monitoring") {
+    Container(webApp, "Web-Application", "UI", "User interface for heating control and temperature monitoring")
+    Container(api, "API", "Go", "Processing requests from a web application and interacting with a database")
+    ContainerDb(db, "Database", "PostgreSQL", "Storing data about users, temperature, and heating settings")
+    
+
+}
+
+System_Boundary(smartHome, "Smart Home") {
+    Container(sensor, "Temperature sensor", "Sensor", "Sending temperature data to the app")
+    Container(system, "Heating system", "System", "Turning on/off the heating in the house")
+}
+
+
+Person(user, "User", "Controls the heating and monitors the temperature")
+
+
+BiRel(webApp, user, "Views temperature and controls the heating")
+BiRel(webApp, api, "API Requests", "REST")
+Rel(sensor, api, "Sends temperature data", "https")
+Rel(api, system, "Sends a switch command", "https")
+BiRel(api, db, "Read/Write data")
+@enduml

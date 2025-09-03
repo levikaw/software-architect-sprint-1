@@ -1,0 +1,25 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!include C4P/C4_Component.puml
+
+allowmixing
+
+Person(person, "Authorized User")
+
+Component(regEquipment, "Equipment Registration Controller")
+
+class Equipment {
+    UUID    id
+    String  type
+    String  name
+    jsonb   state
+    Date    createdAt
+
+    UUID    roomId
+}
+
+Rel(person, regEquipment, "Creates Equipment")
+Rel(regEquipment, Equipment, "Creates entity")
+
+
+@enduml
