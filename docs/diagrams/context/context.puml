@@ -1,0 +1,11 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+System(app, "Application", "Application for heating control and temperature monitoring")
+System(smartHome, "Smart Home", "Heating system with sensors in the user's home")
+Person(user, "User", "Controls the heating and monitors the temperature")
+
+
+BiRel(user, app, "Controls the heating and monitors the temperature")
+BiRel(smartHome, app, "Sending information from sensors and receiving heating control commands", "https")
+@enduml
