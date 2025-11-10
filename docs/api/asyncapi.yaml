@@ -1,0 +1,138 @@
+asyncapi: 3.0.0
+info:
+  title: Warmhouse
+  version: 1.0.0
+  description: Report service using WebSocket
+servers:
+  report.warmhouse:
+    host: report.warmhouse
+    protocol: wss
+    description: Report service server
+  equipment.get-state.warmhouse:
+    host: equipment.get-state.warmhouse
+    protocol: wss
+    description: Server for equipment state monitoring
+channels:
+  equipment:
+    address: equipment.get-state
+    servers:
+      - $ref: '#/servers/equipment.get-state.warmhouse'
+    messages:
+      writeState:
+        $ref: "#/components/messages/writeState"
+      viewState:
+        $ref: "#/components/messages/viewState"
+    description: Channel for state of equipment messages
+  report:
+    address: report.user-activity
+    servers:
+      - $ref: '#/servers/report.warmhouse'
+    messages:
+      writeActivity:
+        $ref: '#/components/messages/writeActivity'
+      viewActivity:
+        $ref: '#/components/messages/viewActivity'
+    description: Channel for operation of user messages
+operations:
+  writeState:
+    action: receive
+    channel:
+      $ref: '#/channels/equipment'
+    summary: Send messages with state of equipment
+    messages:
+      - $ref: '#/channels/equipment/messages/writeState'
+  viewState:
+    action: send
+    channel:
+      $ref: '#/channels/equipment'
+    summary: Receive messages with state of equipment
+    messages:
+      - $ref: '#/channels/equipment/messages/viewState'
+  writeActivity:
+    action: receive
+    channel:
+      $ref: '#/channels/report'
+    summary: Send messages with operation of user
+    messages:
+      - $ref: '#/channels/report/messages/writeActivity'
+  viewActivity:
+    action: send
+    channel:
+      $ref: '#/channels/report'
+    summary: Receive messages with operation of user to transform to viewable form
+    messages:
+      - $ref: '#/channels/report/messages/viewActivity'
+components:
+  messages:
+    writeState:
+      name: writeState
+      title: writeState
+      payload:
+        $ref: '#/components/schemas/Equipment'
+    viewState:
+      name: viewState
+      title: viewState
+      payload:
+        $ref: '#/components/schemas/Equipment'
+    viewActivity:
+      name: viewActivity
+      title: viewActivity
+      payload:
+        $ref: '#/components/schemas/Activity'
+    writeActivity:
+      name: writeActivity
+      title: writeActivity
+      payload:
+        $ref: '#/components/schemas/Activity'
+  schemas:
+    Activity:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: id of entity
+          example: c5baacb4-e977-4fd1-b9d3-e07aa7edd60e
+        operationName:
+          type: string
+          description: name (tag) of operation
+          example: create home
+        executedAt:
+          type: string
+          description: date when operation was executed
+          example: 2025-01-01
+        userId:
+          type: string
+          description: id of user who performed the operation
+          format: uuid
+          example: c5baacb4-e977-4fd1-b9d3-e07aa7edd60e
+    Equipment:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: id of entity
+          example: 1cd67467-14c9-4302-8c3c-46c657b12a31
+        name:
+          type: string
+          description: name of equipment
+          example: 'temperature sensor'
+        type:
+          type: string
+          description: type of equipment
+          example: 'sensor'
+        state:
+          type: object
+          description: equipment state
+          example: {"voltage": 220}
+        createdAt:
+          type: string
+          description: date when equipment was registered
+          example: 2025-01-01
+        roomId:
+          type: string
+          description: id of room where equipment installed
+          format: uuid
+          example: c5baacb4-e977-4fd1-b9d3-e07aa7edd60e

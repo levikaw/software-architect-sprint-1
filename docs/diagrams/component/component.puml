@@ -1,0 +1,34 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!include C4P/C4_Context.puml
+!include C4P/C4_Container.puml
+!include C4P/C4_Component.puml
+
+
+ComponentDb(db, "Database", "PostgreSQL", "Store users, homes and equipments")
+
+Container_Boundary(API, "API") {
+Component(equipmentManager, "Equipment Manager", "Go", "Update and dispatch equipment data")
+Component(reports, "Logs and Reports", "Go", "Log critical queue data, transform data to reports")
+Component(auth, "Sign In Controller", "Go", "Create, check, save and dispatch access keys")
+Component(user, "User Manager", "Go", "Sign Up user, update and dispatch user data, changing password")
+Component(smartHome, "Home Manager", "Go", "Create, update and dispatch home data, link home to village")
+Component(regEquipment, "Equipment Registration Controller", "Go", "Equipment registration and link to home")
+}
+
+BiRel_U(db, reports, "Schema Reports")
+BiRel_U(db, auth, "Schema Users")
+BiRel_U(db, user, "Schema Users")
+BiRel_U(db, regEquipment, "Schema Equipment")
+BiRel_U(db, equipmentManager, "Schema Equipment")
+BiRel_U(db, smartHome, "Schema Home")
+
+Rel_U(auth, reports, "writeActivity", "wss")
+Rel_U(user, reports, "writeActivity", "wss")
+Rel_U(regEquipment, reports, "writeActivity", "wss")
+Rel_U(equipmentManager, reports, "writeActivity", "wss")
+Rel_U(smartHome, reports, "writeActivity", "wss")
+
+Rel_R(auth, user, "Uses", "http")
+Rel_R(regEquipment, equipmentManager, "Uses", "http")
+@enduml

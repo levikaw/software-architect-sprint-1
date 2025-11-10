@@ -1,0 +1,52 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!include C4P/C4_Component.puml
+
+allowmixing
+
+Person(person, "Authorized User")
+
+Person(admin, "Admin")
+
+Component(smartHome, "Home Manager")
+class Village {
+    UUID    id
+    String  name
+    String  location
+    Date    createdAt
+}
+
+class Home {
+    UUID    id
+    String  name
+    Date    createdAt
+
+    UUID    villageId
+}
+
+class LnkUserHome{
+    UUID    id
+    UUID    userId
+    UUID    homeId
+    Date    createdAt
+}
+
+class Room {
+    UUID    id
+    String  name
+    Date    createdAt
+
+    UUID    homeId
+}
+
+
+Rel(person, smartHome, "Creates Home")
+Rel(admin, smartHome, "Creates Village")
+Rel(Village, Home, "Links entity")
+Rel(person, smartHome, "Creates Room")
+Rel(Home, Room, "Links entity")
+Rel(smartHome, Home, "Creates entity")
+Rel(smartHome, Village, "Creates entity")
+Rel(smartHome, Room, "Creates entity")
+Rel(LnkUserHome, Home, "Links entity")
+@enduml

@@ -1,0 +1,80 @@
+@startuml
+
+
+class Equipment {
+    UUID    id
+    String  type
+    String  name
+    jsonb   state
+    Date    createdAt
+
+    UUID    roomId
+}
+
+class User {
+    UUID    id
+    String  name
+    String  email
+    Date    createdAt
+
+    String  accessToken
+    Date    accessTokenAddedAt
+    String  refreshToken
+    Date    refreshTokenAddedAt
+}
+
+class Village {
+    UUID    id
+    String  name
+    String  location
+    Date    createdAt
+}
+
+class Home {
+    UUID    id
+    String  name
+    Date    createdAt
+
+    UUID    villageId
+}
+
+class Room {
+    UUID    id
+    String  name
+    Date    createdAt
+
+    UUID    homeId
+}
+
+class Role {
+    UUID    id
+    String  role
+}
+
+
+class LnkUserRole {
+    UUID    id
+    UUID    userId
+    UUID    roleId
+    Date    createdAt
+}
+
+
+class LnkUserHome{
+    UUID    id
+    UUID    userId
+    UUID    homeId
+    Date    createdAt
+}
+
+Village ||--o{ Home
+Home ||--o{ Room
+Room ||--o{ Equipment
+
+User ||--o{ LnkUserHome
+Home ||--o{ LnkUserHome
+
+User ||--o{ LnkUserRole
+Role ||--o{ LnkUserRole
+
+@enduml

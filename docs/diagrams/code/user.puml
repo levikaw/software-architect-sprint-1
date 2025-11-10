@@ -1,0 +1,29 @@
+@startuml
+!define C4P https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!include C4P/C4_Context.puml
+!include C4P/C4_Container.puml
+!include C4P/C4_Component.puml
+
+allowmixing
+
+Person(person, "New User")
+Component(user, "User Manager")
+class User {
+    UUID    id
+    String  name
+    String  email
+    Date    createdAt
+
+    String  accessToken
+    Date    accessTokenAddedAt
+    String  refreshToken
+    Date    refreshTokenAddedAt
+}
+Component(auth, "Sign In Controller")
+
+Rel(person, user, "Sign Up")
+Rel(user, User, "Creates entity")
+Rel(user, User, "Updates entity with tokens")
+BiRel(user, auth, "Requests token", "http")
+
+@enduml
